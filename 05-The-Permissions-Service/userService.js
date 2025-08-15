@@ -22,24 +22,28 @@ class User{
     }
 }
 
-class Admin extends User{
-    constructor(name){
-        super(name,'Admin')
+class ContentContributor extends User{
+    constructor(name,role){
+        if(new.target === ContentContributor){
+            throw new Error("Can't create a new instance for an abstract class")
+        }
+        super(name,role)
     }
-
     canEditContent(){
         console.log("calling from admin class")
         return true;
     }
 }
 
-class Editor extends User{
+class Admin extends ContentContributor{
+    constructor(name){
+        super(name,'Admin')
+    }
+}
+
+class Editor extends ContentContributor{
     constructor(name){
         super(name,'Editor')
-    }
-
-    canEditContent(){
-        return true;
     }
 }
 
@@ -60,3 +64,7 @@ console.log("for editUser",editUser.canEditContent())
 
 const newAdminUser=new Admin('Git');
 console.log("for newAdminUser",newAdminUser.canEditContent())
+
+// This line will now correctly throw an error, protecting our architecture.
+// const testEditor = new ContentContributor('Test', 'Admin');
+// console.log("test editor", testEditor);
