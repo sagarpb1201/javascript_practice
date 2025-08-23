@@ -90,7 +90,8 @@ async function getDashboardData(userId){
 
         const results = {
             user: userResult.status === 'fulfilled' ? userResult.value : { error: userResult.reason.message },
-            settings: settingsResult.status === 'fulfilled' ? settingsResult.value : { error: settingsResult.reason.message },
+            settings: settingsResult.status === 'fulfilled' ? settingsResult.value : 
+            { error: settingsResult.reason.message },
             news: newsResult.status === 'fulfilled' ? newsResult.value : { error: newsResult.reason.message }
         };
 
