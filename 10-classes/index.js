@@ -1,14 +1,33 @@
-class User{
-    firstName;
-    lastName;
+function canBanUser(){
+        return true;
+    }
 
-    constructor(firstName,lastName){
-        this.firstName=firstName;
-        this.lastName=lastName;
+function applyMixins(targetClass,capabilities){
+    capabilities.forEach(element => {
+        targetClass.prototype[element.name]=element;
+    });
+}
+
+class User{
+    _firstName;
+    _lastName;
+    _email;
+
+    constructor(firstName,lastName,email){
+        this._firstName=firstName;
+        this._lastName=lastName;
+        this._email=email;
     }
 
     getFullName(){
-        return this.firstName+' '+this.lastName;
+        return this._firstName+' '+this._lastName;
+    }
+    get email(){
+        return this._email;
+    }
+
+    set email(email){
+        this._email=email;
     }
 
     static createFromApiData(userData){
@@ -17,24 +36,33 @@ class User{
     }
 }
 
+class Moderator{
+    moderatorId;
+
+    constructor(id){
+        this.moderatorId=id;
+    }
+}
+applyMixins(Moderator,[canBanUser])
+
 class Admin extends User{
     constructor(firstName,lastName){
         super(firstName,lastName);
     }
 
-    canBanUser(){
-        return true;
-    }
-
     getFullName(){
-        // First, call the parent's version of getFullName to get the base logic.
-        const baseFullName = super.getFullName();
-        // Then, add the specialized formatting for the Admin.
-        return `${baseFullName} (Admin)`;
+        // This duplicates the name formatting logic from the parent, which is not ideal for maintenance.
+        // return `${this.lastName}, ${this.firstName}(Admin)`
+        const baseName = super.getFullName();
+        return `${baseName} (Admin)`;
     }
 }
 
-const AliceUser=new User('Alice','Black');
+applyMixins(Admin,[canBanUser])
+
+const AliceUser=new User('Alice','Black','tsetgmail.com');
+console.log(AliceUser.email)
+AliceUser.email='testtsetsts';
 console.log(AliceUser.getFullName())
 const newUser=User.createFromApiData({fName:'Chalie',lName:'Day'})
 console.log(newUser.getFullName())
